@@ -3,75 +3,48 @@ version: 2.1
 orbs:
   terraform: circleci/terraform@3.2
 
-jobs:
-  terraform/fmt:
-    checkout: true
-    context: terraform
-    workspace_root: ./terraform
-
-  terraform/validate:
-    checkout: true
-    context: terraform    
-    workspace_root: ./terraform
-    requires:
-      - terraform/fmt
-
-  terraform/plan:
-    checkout: true
-    context: terraform
-    workspace_root: ./terraform
-    persist-workspace: true        
-    requires:
-      - terraform/validate
-
-  hold-deploy:
-    type: approval
-    requires:
-      - terraform/plan
-
-  terraform/apply:
-    attach-workspace: true
-    context: terraform
-    workspace_root: ./terraform
-    requires:
-      - hold-deploy
-    
-  hold-destroy:
-    type: approval
-    requires:
-      - terraform/apply
-  
-  terraform/destroy:
-    attach-workspace: true
-    context: terraform
-    workspace_root: ./terraform
-    requires:
-      - hold-destroy
-
 workflows:
-  dev:
-    when:
-      branches:
-        only:
-          - dev
+  deploy:
+    # when:
+    #  equals: [ << pipeline.git.branch >>, main ]
     jobs:
-      - terraform/fmt
-      - terraform/validate
-      - terraform/plan
-      - hold-deploy
-      - terraform/apply
-      - hold-destroy
-      - terraform/destroy
-  production:
-    when:
-      branches:
-        only:
-          - main
-    jobs:
-      - terraform/fmt
-      - terraform/validate
-      - terraform/plan
-      - hold-deploy
-      - terraform/apply
-      - hold-destroy
-      - terraform/destroy
+      - terraform/fmt:
+          checkout: true
+          context: terraform
+      - terraform/validate:
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/fmt
+      - terraform/plan:
+          persist_workspace: true
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/validate
+      - approve_apply:
+          type: approval
+          requires: 
+            - terraform/plan
+      - terraform/apply:
+          attach_workspace: true
+          checkout: true
+          context: terraform
+          filters:
+            branches:
+              only: main
+          requires:
+            - approve_apply
+      - approve_destroy:
+          type: approval
+          requires: 
+            - terraform/apply
+      - terraform/destroy:
+          attach_workspace: true
+          checkout: true
+          context: terraform
+          filters:
+            branches:
+              only: main
+          requires:
+            - approve_destroy

@@ -9,16 +9,19 @@ workflows:
       - terraform/fmt:
           checkout: true
           context: terraform
+          workspace_root: ./terraform
 
       - terraform/validate:
           checkout: true
-          context: terraform        
+          context: terraform    
+          workspace_root: ./terraform
           requires:
             - terraform/fmt
 
       - terraform/plan:
           checkout: true
           context: terraform
+          workspace_root: ./terraform
           persist-workspace: true        
           requires:
             - terraform/validate
@@ -31,18 +34,22 @@ workflows:
       - terraform/apply:
           attach-workspace: true
           context: terraform
+          workspace_root: ./terraform
           filters:
             branches:
               only: main
           requires:
             - hold
+        
       - hold-destroy:
           type: approval
           requires:
             - terraform/apply
+      
       - terraform/destroy:
           attach-workspace: true
           context: terraform
+          workspace_root: ./terraform
           filters:
             branches:
               only: main

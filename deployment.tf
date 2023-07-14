@@ -1,3 +1,4 @@
+# Create Nginx deployment
 resource "kubernetes_deployment" "nginx" {
   metadata {
     name = "nginx"
@@ -33,5 +34,23 @@ resource "kubernetes_deployment" "nginx" {
         }
       }
     }
+  }
+}
+
+# Create service to expose deployment
+resource "kubernetes_service" "nginx" {
+  metadata {
+    name = "nginx"
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.nginx.metadata[0].labels.app
+    }
+    port {
+      port        = 80
+      target_port = 80
+    }
+
+    type = "LoadBalancer"
   }
 }

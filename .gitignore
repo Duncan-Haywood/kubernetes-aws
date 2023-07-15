@@ -1,0 +1,31 @@
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Crash log files 
+crash.log
+
+# Ignore .tfvars files
+# *.tfvars
+
+# Ignore .terraform directories
+.terraform/
+
+# Ignore .tfplan files 
+*tfplan* 
+
+# Ignore override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration
+.terraformrc
+terraform.rc
+
+# Ignore lock files since handling with circleci
+.terraform.lock.hcl
+
+# Ignore macOS system files
+.DS_Store

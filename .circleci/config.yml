@@ -15,6 +15,7 @@ workflows:
       - terraform/validate:
           checkout: true
           context: terraform
+
           requires:
             - terraform/fmt
       - terraform/plan:
@@ -31,6 +32,7 @@ workflows:
           attach_workspace: true
           checkout: true
           context: terraform
+          workspace_root: ./terraform
           filters:
             branches:
               only: main
@@ -40,10 +42,12 @@ workflows:
           type: approval
           requires: 
             - terraform/apply
+      
       - terraform/destroy:
           attach_workspace: true
           checkout: true
           context: terraform
+          workspace_root: ./terraform
           filters:
             branches:
               only: main

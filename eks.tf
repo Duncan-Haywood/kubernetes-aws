@@ -1,4 +1,4 @@
-# terrafrom setup for an eks cluster on aws
+# Terrafrom setup for an eks cluster on aws
 # Configure Kubernetes provider 
 provider "kubernetes" {
   host                   = aws_eks_cluster.example.endpoint

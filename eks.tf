@@ -15,7 +15,7 @@ provider "kubernetes" {
 resource "aws_vpc" "eks_vpc" {
   cidr_block = "10.0.0.0/16"
 
-  tags = { 
+  tags = {
     Name = "EKS VPC"
   }
 }
@@ -25,22 +25,22 @@ resource "aws_internet_gateway" "eks_igw" {
   vpc_id = aws_vpc.eks_vpc.id
 
   tags = {
-    Name = "EKS IGW" 
+    Name = "EKS IGW"
   }
 }
 
 # Create public subnets 
 resource "aws_subnet" "eks_public_subnets" {
   count = 2
-  
-  vpc_id = aws_vpc.eks_vpc.id
-  cidr_block = "10.0.${count.index}.0/24"
+
+  vpc_id            = aws_vpc.eks_vpc.id
+  cidr_block        = "10.0.${count.index}.0/24"
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
     Name = "EKS public subnet ${count.index}"
   }
-} 
+}
 
 
 # Create EKS cluster  
@@ -75,7 +75,7 @@ POLICY
 
 # EKS node group 
 resource "aws_eks_node_group" "private_ng" {
-  cluster_name    = aws_eks_cluster.eks_cluster.name
+  cluster_name = aws_eks_cluster.eks_cluster.name
 
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.eks_node_role.arn
@@ -97,7 +97,7 @@ resource "aws_eks_node_group" "private_ng" {
   }
 
   tags = {
-    "k8s.io/cluster-autoscaler/enabled" = "true"
+    "k8s.io/cluster-autoscaler/enabled"                             = "true"
     "k8s.io/cluster-autoscaler/${aws_eks_cluster.eks_cluster.name}" = "owned"
   }
 

@@ -1,32 +1,42 @@
-# Kubernetes AWS Nginx Deployment
+# AWS-EKS deployment with Circle CI
 
-This repository contains a Kubernetes manifest to deploy Nginx on an AWS EKS cluster.
+This repository provisions EKS on AWS and deploys Nginx using a CircleCI pipeline.
 
-## Contents
+## Overview
 
-- `deployment.tf`: Kubernetes manifest for deploying Nginx
-- `eks-cluster.tf`: Terraform configuration for provisioning EKS cluster prerequisites 
-- `README.md`: This file
+The CircleCI pipeline will:
 
-## Prerequisites
+- Provision EKS cluster using Terraform 
+- Deploy Nginx manifests to EKS
+- Destroy infrastructure on manual approval
 
-- Terraform installed
-- AWS account with proper permissions to create:
-  - EKS cluster
-  - Associated VPC, subnets, Internet Gateway etc
-- kubectl installed and configured for EKS cluster
+Commits to `main` trigger an automated deploy with approval step.
 
-## Usage
+## Pipeline Steps 
 
-1. Run `terraform apply` on `eks-cluster.tf` to provision EKS cluster and dependencies 
-2. Configure Kubernetes provider in `deployment.tf` to point to new EKS cluster
-3. Run `terraform apply` to deploy Nginx deployment
-4. Verify deployment:
+On commits to `main`, the pipeline will:
 
-```
-kubectl get deployments
-```
+- Format and validate Terraform
+- Provision EKS cluster and dependencies 
+- Deploy Nginx manifests to EKS
 
-This will deploy a basic Nginx deployment on the EKS cluster with 1 replica exposed on port 80.
+## Requirements
 
-The Terraform configurations are minimal examples - further customization can be done to parameters like subnet CIDRs, auto scaling configuration etc.
+- CircleCI account linked to GitHub repo
+- AWS credentials in CircleCI for Terraform 
+
+## Resources Created
+
+- VPC, subnets, and networking for EKS  
+- EKS cluster control plane
+- EKS managed node group
+- Nginx Kubernetes deployment
+- Load balancer service for Nginx
+
+## License
+
+This code is released under the MIT License.
+
+## Author
+
+This project was created by Duncan Haywood

@@ -1,3 +1,4 @@
+# Nginx deployment and service
 # Create Nginx deployment
 resource "kubernetes_deployment" "nginx" {
   metadata {
